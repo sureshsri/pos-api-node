@@ -1,11 +1,37 @@
 const userSchema = require('../model/UserSchema');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
 
 const salt = 10;
 
 
 const register =(req,resp)=>{
-    bcrypt.hash(req.body.password,salt,function(err,hash){
+
+    const transporter =nodemailer.createTransport({
+        service:'gmail',
+
+        auth:{
+            user:'sureshwts2@gmail.com',
+            pass:'iqnw quqq yztk hedl'
+        }
+    });
+
+
+    const mailOption = {
+        from:'sureshwts2@gmail.com',
+        to:req.body.email,
+        subject:'New account creation!',
+        text:'You have created your account'
+
+    }
+    transporter.sendMail(mailOption,function(err,info){
+        if(err){
+            return resp.status(500).json({'error':err});
+        }else{
+            return resp.status(200).json({'infomation':info.response});
+        }
+    });
+    /*bcrypt.hash(req.body.password,salt,function(err,hash){
         if(err){
              return resp.status(500).json(err);
         }
@@ -24,9 +50,7 @@ const register =(req,resp)=>{
             resp.status(500).json(error);
         })
 
-
-
-    })
+    })*/
 
 }
 
